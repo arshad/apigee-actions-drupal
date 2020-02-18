@@ -1,0 +1,4 @@
+services:
+  logger.channel.apigee_actions:
+    parent: logger.channel_base
+    arguments: ['apigee_actions']

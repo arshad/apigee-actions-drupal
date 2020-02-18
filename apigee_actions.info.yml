@@ -1,0 +1,9 @@
+name: Apigee Actions
+description: Workflow and rules integration for Apigee Edge.
+package: Apigee
+type: module
+core: 8.x
+dependencies:
+  - apigee_edge:apigee_edge
+  - business_rules:business_rules
+  - rules:rules

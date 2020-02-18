@@ -1,0 +1,8 @@
+# Defines events for the rules module.
+apigee_actions.app.created:
+  label: 'After saving a new App'
+  category: 'Apigee'
+  context:
+    app:
+      type: 'entity:developer_app'
+      label: 'App'

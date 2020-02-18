@@ -1,0 +1,53 @@
+<?php
+
+/**
+ * Copyright 2020 Google Inc.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
+
+use Drupal\apigee_actions\Event\AppCreateEvent;
+use Drupal\apigee_actions\Event\AppEvents;
+use Drupal\apigee_edge\Entity\AppInterface;
+use Drupal\business_rules\Events\BusinessRulesEvent;
+use Drupal\Core\Entity\EntityInterface;
+
+/**
+ * Implements hook_entity_insert().
+ */
+function apigee_actions_entity_insert(EntityInterface $entity) {
+  if ($entity instanceof AppInterface) {
+    // Dispatch core-compatible event.
+    Drupal::service('event_dispatcher')
+      ->dispatch(AppEvents::APP_CREATED, new AppCreateEvent($entity));
+
+    // Dispatch Business rules event.
+    $reacts_on_definition = \Drupal::getContainer()
+      ->get('plugin.manager.business_rules.reacts_on')
+      ->getDefinition('apigee_actions_app_created');
+
+    $event = new BusinessRulesEvent($entity, [
+      'entity_type_id' => $entity->getEntityTypeId(),
+      'bundle' => $entity->bundle(),
+      'entity' => $entity,
+      'entity_unchanged' => !empty($entity->original) ? $entity->original : NULL,
+      'reacts_on' => $reacts_on_definition,
+      'loop_control' => $entity->getEntityTypeId() . $entity->id(),
+    ]);
+
+    Drupal::service('event_dispatcher')
+      ->dispatch($reacts_on_definition['eventName'], $event);
+  }
+}
