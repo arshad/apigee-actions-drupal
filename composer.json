@@ -8,6 +8,12 @@
         "drupal/apigee_edge": "~1.0",
         "drupal/rules": "^3.0@alpha"
     },
+    "require-dev": {
+        "apigee/apigee-mock-client-php": "^1.0",
+        "phpmd/phpmd": "^2.8",
+        "phpmetrics/phpmetrics": "^2.5",
+        "phpunit/phpunit": "^6.5"
+    },
     "config": {
         "sort-packages": true
     },
