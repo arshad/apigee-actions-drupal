@@ -20,9 +20,13 @@
 
 namespace Drupal\apigee_actions\Event;
 
+use Symfony\Component\EventDispatcher\GenericEvent;
+
 /**
- * Defines the app create event.
+ * Base class for Edge events.
+ *
+ * TODO: Rules does not support non GenericEvent context.
  */
-class AppCreateEvent extends AppEventBase {
+abstract class EdgeEntityEventBase extends GenericEvent {
 
 }

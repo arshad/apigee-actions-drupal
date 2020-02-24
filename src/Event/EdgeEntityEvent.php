@@ -18,24 +18,11 @@
  * MA 02110-1301, USA.
  */
 
-namespace Drupal\apigee_actions\Plugin\BusinessRulesReactsOn;
-
-use Drupal\business_rules\Plugin\BusinessRulesReactsOnPlugin;
+namespace Drupal\apigee_actions\Event;
 
 /**
- * Defines the app created business rule.
- *
- * @BusinessRulesReactsOn(
- *   id = "apigee_actions_app_created",
- *   label = @Translation("App created"),
- *   description = @Translation("Reacts after a new app has been created."),
- *   group = @Translation("Apigee"),
- *   eventName = "apigee_actions.business_rules.app.created",
- *   hasTargetEntity = FALSE,
- *   hasTargetBundle = FALSE,
- *   priority = 1000,
- * )
+ * Defines the Edge entity event.
  */
-class AppCreated extends BusinessRulesReactsOnPlugin {
+class EdgeEntityEvent extends EdgeEntityEventBase {
 
 }

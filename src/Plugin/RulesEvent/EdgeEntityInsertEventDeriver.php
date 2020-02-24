@@ -18,31 +18,27 @@
  * MA 02110-1301, USA.
  */
 
-namespace Drupal\apigee_actions\Event;
+namespace Drupal\apigee_actions\Plugin\RulesEvent;
 
-use Drupal\apigee_edge\Entity\AppInterface;
-use Symfony\Component\EventDispatcher\Event;
+use Drupal\apigee_edge\Entity\EdgeEntityTypeInterface;
 
 /**
- * Base class for app events.
+ * Deriver for Edge entity insert events.
  */
-abstract class AppEventBase extends Event {
+class EdgeEntityInsertEventDeriver extends EdgeEntityEventDeriverBase {
 
   /**
-   * The app entity.
-   *
-   * @var \Drupal\apigee_edge\Entity\AppInterface
+   * {@inheritdoc}
    */
-  public $app;
+  public function getEventActionName(EdgeEntityTypeInterface $entity_type): string {
+    return 'insert';
+  }
 
   /**
-   * AppEvent constructor.
-   *
-   * @param \Drupal\apigee_edge\Entity\AppInterface $app
-   *   The app entity.
+   * {@inheritdoc}
    */
-  public function __construct(AppInterface $app) {
-    $this->app = $app;
+  public function getEventActionLabel(EdgeEntityTypeInterface $entity_type): string {
+    return $this->t('After saving a new @entity_type', ['@entity_type' => $entity_type->getSingularLabel()]);
   }
 
 }

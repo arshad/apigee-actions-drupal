@@ -18,20 +18,32 @@
  * MA 02110-1301, USA.
  */
 
-namespace Drupal\apigee_actions\Event;
+namespace Drupal\apigee_actions;
+
+use Drupal\Core\Entity\EntityTypeInterface;
 
 /**
- * Defines events for app.
+ * Defines the ApigeeAppEntityTypeManagerInterface interface.
  */
-final class AppEvents {
+interface EdgeEntityTypeManagerInterface {
 
   /**
-   * Name of the event fired when an app is created.
+   * Returns an array of Apigee Edge entity types.
    *
-   * @Event
-   *
-   * @see \Drupal\apigee_actions\Event\AppCreateEvent
+   * @return \Drupal\Core\Entity\EntityTypeInterface[]
+   *   An array of Apigee Edge entity types.
    */
-  const APP_CREATED = 'apigee_actions.app.created';
+  public function getEntityTypes(): array;
+
+  /**
+   * Determines if the given entity type is an Apigee Edge entity type.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
+   *   The entity type.
+   *
+   * @return bool
+   *   TRUE if given entity type is an Apigee Edge entity type. FALSE otherwise.
+   */
+  public function isEdgeEntityType(EntityTypeInterface $entity_type): bool;
 
 }
