@@ -18,7 +18,7 @@
  * MA 02110-1301, USA.
  */
 
-namespace Drupal\Tests\apigee_actions\Kernel;
+namespace Drupal\Tests\apigee_actions\Kernel\Plugin\RulesEvent;
 
 use Drupal\apigee_edge\Entity\DeveloperApp;
 use Drupal\Core\Database\Database;
@@ -86,7 +86,8 @@ class EdgeEntityInsertEventTest extends RulesKernelTestBase {
     $rule = $this->expressionManager->createRule();
     $rule->addAction('apigee_actions_log_message',
       ContextConfig::create()
-        ->setValue('message', "App {{ developer_app.id }} was created.")
+        ->setValue('message', "App {{ developer_app.name }} was created.")
+        ->process('message', 'rules_tokens')
     );
 
     $config_entity = $this->storage->create([
@@ -125,6 +126,7 @@ class EdgeEntityInsertEventTest extends RulesKernelTestBase {
       ->fetchCol();
 
     $this->assertContains("Event apigee_actions_entity_insert:developer_app was dispatched.", $logs);
+    $this->assertContains("App {$app->getName()} was created.", $logs);
   }
 
 }
