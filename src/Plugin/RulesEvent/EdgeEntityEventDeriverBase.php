@@ -27,8 +27,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Rules event deriver for Apigee Edge entity types.
- *
- * @package Drupal\apigee_actions\Plugin\RulesEvent
  */
 abstract class EdgeEntityEventDeriverBase extends DeriverBase implements EdgeEntityEventDeriverInterface {
 

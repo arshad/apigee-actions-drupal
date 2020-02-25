@@ -21,7 +21,6 @@
 namespace Drupal\apigee_actions\Plugin\RulesAction;
 
 use Drupal\Core\Annotation\ContextDefinition;
-use Drupal\Core\Logger\RfcLogLevel;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\rules\Core\Annotation\RulesAction;
 use Drupal\rules\Core\RulesActionBase;

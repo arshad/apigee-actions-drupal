@@ -20,7 +20,6 @@
 
 namespace Drupal\apigee_actions;
 
-use Drupal\apigee_edge\Entity\EdgeEntityInterface;
 use Drupal\apigee_edge\Entity\FieldableEdgeEntityInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
