@@ -5,17 +5,18 @@
     "description": "Rules integration for Apigee Edge.",
     "require": {
         "php": ">=7.1",
-        "drupal/apigee_edge": "~1.0",
+        "drupal/apigee_edge": "dev-1.x",
         "drupal/rules": "^3.0@alpha"
     },
     "require-dev": {
         "apigee/apigee-mock-client-php": "^1.0",
-        "phpmd/phpmd": "^2.8",
-        "phpmetrics/phpmetrics": "^2.5",
+        "cweagans/composer-patches": "^1.6",
+        "drupal/coder": "^8.3",
         "phpunit/phpunit": "^6.5"
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "preferred-install": "source"
     },
     "minimum-stability": "dev",
     "prefer-stable": true
