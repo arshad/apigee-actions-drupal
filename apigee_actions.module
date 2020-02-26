@@ -36,6 +36,13 @@ function apigee_actions_entity_delete(EntityInterface $entity) {
 }
 
 /**
+ * Implements hook_entity_update().
+ */
+function apigee_actions_entity_update(EntityInterface $entity) {
+  _apigee_actions_dispatch_entity_event($entity, 'update');
+}
+
+/**
  * Helper to dispatch an entity event.
  *
  * @param \Drupal\Core\Entity\EntityInterface $entity
@@ -45,12 +52,20 @@ function apigee_actions_entity_delete(EntityInterface $entity) {
  */
 function _apigee_actions_dispatch_entity_event(EntityInterface $entity, string $event_name) {
   if (Drupal::service('apigee_actions.edge_entity_type_manager')->isEdgeEntityType($entity->getEntityType())) {
-    $event_name = "apigee_actions_entity_$event_name:{$entity->getEntityTypeId()}";
+    $dispatched_event_name = "apigee_actions_entity_$event_name:{$entity->getEntityTypeId()}";
 
-    Drupal::logger('apigee_actions')->notice("Event $event_name was dispatched.");
+    Drupal::logger('apigee_actions')->notice("Event $dispatched_event_name was dispatched.");
+
+    $arguments = [
+      $entity->getEntityTypeId() => $entity
+    ];
+
+    if ($event_name === 'update') {
+      $arguments["{$entity->getEntityTypeId()}_unchanged"] = $entity->original;
+    }
 
     /** @var \Drupal\apigee_edge\Entity\EdgeEntityInterface $entity */
     Drupal::service('event_dispatcher')
-      ->dispatch($event_name, new EdgeEntityEvent($entity, [$entity->getEntityTypeId() => $entity]));
+      ->dispatch($dispatched_event_name, new EdgeEntityEvent($entity, $arguments));
   }
 }

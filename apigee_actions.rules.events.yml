@@ -6,3 +6,7 @@ apigee_actions_entity_delete:
   label: 'After deleting an Edge entity'
   deriver: '\Drupal\apigee_actions\Plugin\RulesEvent\EdgeEntityDeleteEventDeriver'
 
+apigee_actions_entity_update:
+  label: 'After updating an Edge entity'
+  deriver: '\Drupal\apigee_actions\Plugin\RulesEvent\EdgeEntityUpdateEventDeriver'
+

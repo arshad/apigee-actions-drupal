@@ -74,6 +74,13 @@ abstract class EdgeEntityEventDeriverBase extends DeriverBase implements EdgeEnt
           ],
         ],
       ] + $base_plugin_definition;
+
+      if ($this->getEventActionName($entity_type) === 'update') {
+        $this->derivatives[$entity_type->id()]['context']["{$entity_type->id()}_unchanged"] = [
+          'type' => "entity:{$entity_type->id()}",
+          'label' => $this->t('Unchanged @entity_type', ['@entity_type' => $entity_type->getLabel()]),
+        ];
+      }
     }
 
     return $this->derivatives;

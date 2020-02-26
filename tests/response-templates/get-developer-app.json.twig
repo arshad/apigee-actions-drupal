@@ -1,6 +1,13 @@
 {
-  "name": "{{ app.name }}",
-  "status": "{{ app.status }}",
+  "appFamily": "default",
   "appId": "{{ app.uuid }}",
-  "developerId": "{{ app.developerId }}"
+  "attributes": [
+    {
+      "name": "DisplayName",
+      "value": "{{ app.displayName }}"
+    }
+  ],
+  "developerId": "{{ app.developerId }}",
+  "name": "{{ app.name }}",
+  "status": "{{ app.status }}"
 }
