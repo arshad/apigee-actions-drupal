@@ -21,6 +21,7 @@
 namespace Drupal\apigee_actions\Plugin\RulesEvent;
 
 use Drupal\apigee_actions\EdgeEntityTypeManagerInterface;
+use Drupal\apigee_edge\Entity\AppInterface;
 use Drupal\apigee_edge\Entity\EdgeEntityTypeInterface;
 use Drupal\Component\Plugin\Derivative\DeriverBase;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
@@ -70,12 +71,24 @@ abstract class EdgeEntityEventDeriverBase extends DeriverBase implements EdgeEnt
    * {@inheritdoc}
    */
   public function getContext(EdgeEntityTypeInterface $entity_type): array {
-    return [
+    $context = [
       $entity_type->id() => [
         'type' => "entity:{$entity_type->id()}",
         'label' => $entity_type->getLabel(),
       ],
     ];
+
+    // Add additional context for App.
+    // TODO: Move this to a plugin?
+    if ($entity_type->entityClassImplements(AppInterface::class)) {
+      // Add the team member to the context.
+      $context['developer'] = [
+        'type' => 'entity:user',
+        'label' => 'Developer',
+      ];
+    }
+
+    return $context;
   }
 
   /**

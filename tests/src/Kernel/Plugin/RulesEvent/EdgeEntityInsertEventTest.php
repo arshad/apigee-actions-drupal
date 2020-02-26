@@ -40,7 +40,7 @@ class EdgeEntityInsertEventTest extends EdgeEntityEventTestBase {
     $rule = $this->expressionManager->createRule();
     $rule->addAction('apigee_actions_log_message',
       ContextConfig::create()
-        ->setValue('message', "App {{ developer_app.name }} was created.")
+        ->setValue('message', "App {{ developer_app.name }} was created by {{ developer.first_name }}.")
         ->process('message', 'rules_tokens')
     );
 
@@ -55,7 +55,7 @@ class EdgeEntityInsertEventTest extends EdgeEntityEventTestBase {
     $entity = $this->createDeveloperApp();
 
     $this->assertLogsContains("Event apigee_actions_entity_insert:developer_app was dispatched.");
-    $this->assertLogsContains("App {$entity->getName()} was created.");
+    $this->assertLogsContains("App {$entity->getName()} was created by {$this->account->first_name->value}.");
   }
 
 }
