@@ -29,25 +29,33 @@ use Drupal\Core\Plugin\Discovery\ContainerDeriverInterface;
 interface EdgeEntityEventDeriverInterface extends ContainerDeriverInterface {
 
   /**
-   * Returns the event's action name. Example: 'insert' or 'delete'.
+   * Returns the event's label. Example: 'After saving a new App'.
    *
    * @param \Drupal\apigee_edge\Entity\EdgeEntityTypeInterface $entity_type
    *   The Apigee Edge entity type.
    *
    * @return string
-   *   The event's action name.
+   *   The event's label.
    */
-  public function getEventActionName(EdgeEntityTypeInterface $entity_type): string;
+  public function getLabel(EdgeEntityTypeInterface $entity_type): string;
 
   /**
-   * Returns the event's action label. Example: 'After saving a new App'.
+   * Returns an array of event context.
    *
    * @param \Drupal\apigee_edge\Entity\EdgeEntityTypeInterface $entity_type
    *   The Apigee Edge entity type.
    *
-   * @return string
-   *   The event's action name.
+   * @return array
+   *   An array of event context.
    */
-  public function getEventActionLabel(EdgeEntityTypeInterface $entity_type): string;
+  public function getContext(EdgeEntityTypeInterface $entity_type): array;
+
+  /**
+   * Returns an array of entity types that are compatible to this event.
+   *
+   * @return array
+   *   An array of Edge entity types.
+   */
+  public function getEntityTypes(): array;
 
 }

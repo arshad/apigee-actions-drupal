@@ -21,6 +21,7 @@
 namespace Drupal\apigee_actions\Plugin\RulesEvent;
 
 use Drupal\apigee_actions\EdgeEntityTypeManagerInterface;
+use Drupal\apigee_edge\Entity\EdgeEntityTypeInterface;
 use Drupal\Component\Plugin\Derivative\DeriverBase;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -37,16 +38,16 @@ abstract class EdgeEntityEventDeriverBase extends DeriverBase implements EdgeEnt
    *
    * @var \Drupal\apigee_actions\EdgeEntityTypeManagerInterface
    */
-  protected $apigeeAppEntityTypeManager;
+  protected $edgeEntityTypeManager;
 
   /**
    * AppEventDeriver constructor.
    *
-   * @param \Drupal\apigee_actions\EdgeEntityTypeManagerInterface $apigee_app_entity_type_manager
+   * @param \Drupal\apigee_actions\EdgeEntityTypeManagerInterface $edge_entity_type_manager
    *   The apigee app entity type manager service.
    */
-  public function __construct(EdgeEntityTypeManagerInterface $apigee_app_entity_type_manager) {
-    $this->apigeeAppEntityTypeManager = $apigee_app_entity_type_manager;
+  public function __construct(EdgeEntityTypeManagerInterface $edge_entity_type_manager) {
+    $this->edgeEntityTypeManager = $edge_entity_type_manager;
   }
 
   /**
@@ -61,26 +62,33 @@ abstract class EdgeEntityEventDeriverBase extends DeriverBase implements EdgeEnt
   /**
    * {@inheritdoc}
    */
+  public function getEntityTypes(): array {
+    return $this->edgeEntityTypeManager->getEntityTypes();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getContext(EdgeEntityTypeInterface $entity_type): array {
+    return [
+      $entity_type->id() => [
+        'type' => "entity:{$entity_type->id()}",
+        'label' => $entity_type->getLabel(),
+      ],
+    ];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getDerivativeDefinitions($base_plugin_definition) {
-    foreach ($this->apigeeAppEntityTypeManager->getEntityTypes() as $entity_type) {
+    foreach ($this->getEntityTypes() as $entity_type) {
       $this->derivatives[$entity_type->id()] = [
-        'label' => $this->getEventActionLabel($entity_type),
+        'label' => $this->getLabel($entity_type),
         'category' => $entity_type->getLabel(),
         'entity_type_id' => $entity_type->id(),
-        'context' => [
-          $entity_type->id() => [
-            'type' => "entity:{$entity_type->id()}",
-            'label' => $entity_type->getLabel(),
-          ],
-        ],
+        'context' => $this->getContext($entity_type),
       ] + $base_plugin_definition;
-
-      if ($this->getEventActionName($entity_type) === 'update') {
-        $this->derivatives[$entity_type->id()]['context']["{$entity_type->id()}_unchanged"] = [
-          'type' => "entity:{$entity_type->id()}",
-          'label' => $this->t('Unchanged @entity_type', ['@entity_type' => $entity_type->getLabel()]),
-        ];
-      }
     }
 
     return $this->derivatives;

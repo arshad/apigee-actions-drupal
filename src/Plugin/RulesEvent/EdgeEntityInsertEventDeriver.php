@@ -30,14 +30,7 @@ class EdgeEntityInsertEventDeriver extends EdgeEntityEventDeriverBase {
   /**
    * {@inheritdoc}
    */
-  public function getEventActionName(EdgeEntityTypeInterface $entity_type): string {
-    return 'insert';
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getEventActionLabel(EdgeEntityTypeInterface $entity_type): string {
+  public function getLabel(EdgeEntityTypeInterface $entity_type): string {
     return $this->t('After saving a new @entity_type', ['@entity_type' => $entity_type->getSingularLabel()]);
   }
 

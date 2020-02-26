@@ -30,14 +30,7 @@ class EdgeEntityDeleteEventDeriver extends EdgeEntityEventDeriverBase {
   /**
    * {@inheritdoc}
    */
-  public function getEventActionName(EdgeEntityTypeInterface $entity_type): string {
-    return 'delete';
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getEventActionLabel(EdgeEntityTypeInterface $entity_type): string {
+  public function getLabel(EdgeEntityTypeInterface $entity_type): string {
     return $this->t('After deleting a @entity_type', ['@entity_type' => $entity_type->getSingularLabel()]);
   }
 
