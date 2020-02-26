@@ -23,39 +23,45 @@ namespace Drupal\Tests\apigee_actions\Kernel\Plugin\RulesEvent;
 use Drupal\rules\Context\ContextConfig;
 
 /**
- * Tests Edge entity insert event.
+ * Tests Edge entity delete event.
  *
  * @package Drupal\Tests\apigee_actions\Kernel
  */
-class EdgeEntityInsertEventTest extends EdgeEntityEventTestBase {
+class EdgeEntityDeleteEventTest extends EdgeEntityEventTestBase {
 
   /**
-   * Tests insert events for Edge entities.
+   * Tests delete events for Edge entities.
    *
    * @throws \Drupal\Core\Entity\EntityStorageException
    * @throws \Drupal\rules\Exception\LogicException
    */
-  public function testInsertEvent() {
-    // Create an insert rule.
+  public function testDeleteEvent() {
+    // Create a delete rule.
     $rule = $this->expressionManager->createRule();
     $rule->addAction('apigee_actions_log_message',
       ContextConfig::create()
-        ->setValue('message', "App {{ developer_app.name }} was created.")
+        ->setValue('message', "App {{ developer_app.name }} was deleted.")
         ->process('message', 'rules_tokens')
     );
 
     $config_entity = $this->storage->create([
-      'id' => 'app_insert_rule',
-      'events' => [['event_name' => 'apigee_actions_entity_insert:developer_app']],
+      'id' => 'app_delete_rule',
+      'events' => [['event_name' => 'apigee_actions_entity_delete:developer_app']],
       'expression' => $rule->getConfiguration(),
     ]);
     $config_entity->save();
 
-    // Insert an entity.
+    // Insert and delete entity.
     $entity = $this->createEdgeEntity();
+    $this->stack->queueMockResponse([
+      'get_developer_app' => [
+        'app' => $entity,
+      ]
+    ]);
+    $entity->delete();
 
-    $this->assertLogsContains("Event apigee_actions_entity_insert:developer_app was dispatched.");
-    $this->assertLogsContains("App {$entity->getName()} was created.");
+    $this->assertLogsContains("Event apigee_actions_entity_delete:developer_app was dispatched.");
+    $this->assertLogsContains("App {$entity->getName()} was deleted.");
   }
 
 }

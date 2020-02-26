@@ -29,6 +29,13 @@ function apigee_actions_entity_insert(EntityInterface $entity) {
 }
 
 /**
+ * Implements hook_entity_delete().
+ */
+function apigee_actions_entity_delete(EntityInterface $entity) {
+  _apigee_actions_dispatch_entity_event($entity, 'delete');
+}
+
+/**
  * Helper to dispatch an entity event.
  *
  * @param \Drupal\Core\Entity\EntityInterface $entity
