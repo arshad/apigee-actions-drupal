@@ -152,7 +152,39 @@ class TeamMembershipManager implements TeamMembershipManagerInterface {
   public function addMembers(string $team, array $developers): void {
     $this->inner->addMembers($team, $developers);
 
-    $dispatched_event_name = 'apigee_actions_entity_add_member:team';
+    $this->dispatchEvent('apigee_actions_entity_add_member:team', $team, $developers);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function removeMembers(string $team, array $developers): void {
+    $this->inner->removeMembers($team, $developers);
+
+    $this->dispatchEvent('apigee_actions_entity_remove_member:team', $team, $developers);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getTeams(string $developer): array {
+    return $this->inner->getTeams($developer);
+  }
+
+  /**
+   * Helper to dispatch event.
+   *
+   * @param string $event
+   *   The event name.
+   * @param string $team
+   *   The team id.
+   * @param array $developers
+   *   An array of developers.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   */
+  protected function dispatchEvent(string $event, string $team, array $developers) {
     $team = $this->entityTypeManager->getStorage('team')->load($team);
     $users_by_mail = array_reduce($this->entityTypeManager->getStorage('user')->loadByProperties(['mail' => $developers]), function (array $carry, UserInterface $user) {
       $carry[$user->getEmail()] = $user;
@@ -161,26 +193,12 @@ class TeamMembershipManager implements TeamMembershipManagerInterface {
 
     // Dispatch an event for each developer.
     foreach ($developers as $developer) {
-      $this->apigeeActionsLogger->notice("Event $dispatched_event_name was dispatched.");
-      $this->eventDispatcher->dispatch($dispatched_event_name, new EdgeEntityEvent($team, [
+      $this->apigeeActionsLogger->notice("Event $event was dispatched.");
+      $this->eventDispatcher->dispatch($event, new EdgeEntityEvent($team, [
         'team' => $team,
         'member' => $users_by_mail[$developer],
       ]));
     }
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function removeMembers(string $team, array $developers): void {
-    $this->inner->removeMembers($team, $developers);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getTeams(string $developer): array {
-    return $this->inner->getTeams($developer);
   }
 
 }

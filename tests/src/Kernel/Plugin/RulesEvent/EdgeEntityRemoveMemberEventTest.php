@@ -23,11 +23,11 @@ namespace Drupal\Tests\apigee_actions\Kernel\Plugin\RulesEvent;
 use Drupal\rules\Context\ContextConfig;
 
 /**
- * Tests Edge entity add_member event.
+ * Tests Edge entity remove_member event.
  *
  * @package Drupal\Tests\apigee_actions\Kernel
  */
-class EdgeEntityAddMemberEventTest extends EdgeEntityEventTestBase {
+class EdgeEntityRemoveMemberEventTest extends EdgeEntityEventTestBase {
 
   /**
    * {@inheritdoc}
@@ -57,18 +57,18 @@ class EdgeEntityAddMemberEventTest extends EdgeEntityEventTestBase {
    * @throws \Drupal\Core\Entity\EntityStorageException
    * @throws \Drupal\rules\Exception\LogicException
    */
-  public function testInsertEvent() {
-    // Create an add_member rule.
+  public function testRemoveMemberEvent() {
+    // Create an remove_member rule.
     $rule = $this->expressionManager->createRule();
     $rule->addAction('apigee_actions_log_message',
       ContextConfig::create()
-        ->setValue('message', "Member {{ member.first_name }} was added to team {{ team.displayName }}.")
+        ->setValue('message', "Member {{ member.first_name }} was removed from team {{ team.displayName }}.")
         ->process('message', 'rules_tokens')
     );
 
     $config_entity = $this->storage->create([
-      'id' => 'app_add_member_rule',
-      'events' => [['event_name' => 'apigee_actions_entity_add_member:team']],
+      'id' => 'app_remove_member_rule',
+      'events' => [['event_name' => 'apigee_actions_entity_remove_member:team']],
       'expression' => $rule->getConfiguration(),
     ]);
     $config_entity->save();
@@ -79,12 +79,18 @@ class EdgeEntityAddMemberEventTest extends EdgeEntityEventTestBase {
     // Add team member.
     $this->queueCompanyResponse($team->decorated());
     $this->queueDeveloperResponse($this->account);
-    $this->container->get('apigee_edge_teams.team_membership_manager')->addMembers($team->id(), [
+    $team_membership_manager = $this->container->get('apigee_edge_teams.team_membership_manager');
+    $team_membership_manager->addMembers($team->id(), [
       $this->account->getEmail(),
     ]);
 
-    $this->assertLogsContains("Event apigee_actions_entity_add_member:team was dispatched.");
-    $this->assertLogsContains("Member {$this->account->first_name->value} was added to team {$team->getDisplayName()}.");
+    // Remove team member.
+    $team_membership_manager->removeMembers($team->id(), [
+      $this->account->getEmail(),
+    ]);
+
+    $this->assertLogsContains("Event apigee_actions_entity_remove_member:team was dispatched.");
+    $this->assertLogsContains("Member {$this->account->first_name->value} was removed from team {$team->getDisplayName()}.");
   }
 
 }
