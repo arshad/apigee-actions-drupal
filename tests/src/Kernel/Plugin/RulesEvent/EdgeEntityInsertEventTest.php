@@ -52,7 +52,7 @@ class EdgeEntityInsertEventTest extends EdgeEntityEventTestBase {
     $config_entity->save();
 
     // Insert an entity.
-    $entity = $this->createEdgeEntity();
+    $entity = $this->createDeveloperApp();
 
     $this->assertLogsContains("Event apigee_actions_entity_insert:developer_app was dispatched.");
     $this->assertLogsContains("App {$entity->getName()} was created.");

@@ -20,7 +20,6 @@
 
 namespace Drupal\Tests\apigee_actions\Kernel\Plugin\RulesEvent;
 
-use Drupal\apigee_edge_teams\Entity\Team;
 use Drupal\rules\Context\ContextConfig;
 
 /**
@@ -75,25 +74,10 @@ class EdgeEntityAddMemberEventTest extends EdgeEntityEventTestBase {
     $config_entity->save();
 
     // Create a new team.
-    /** @var \Drupal\apigee_edge_teams\Entity\TeamInterface $team */
-    $team = Team::create([
-      'name' => $this->randomMachineName(),
-      'displayName' => $this->randomGenerator->name(),
-    ]);
-    $this->stack->queueMockResponse([
-      'get_team' => [
-        'team' => $team,
-      ],
-    ]);
-    $this->queueDeveloperResponse($this->account);
-    $team->save();
+    $team = $this->createTeam();
 
     // Add team member.
-    $this->stack->queueMockResponse([
-      'get_team' => [
-        'team' => $team,
-      ],
-    ]);
+    $this->queueCompanyResponse($team->decorated());
     $this->queueDeveloperResponse($this->account);
     $this->container->get('apigee_edge_teams.team_membership_manager')->addMembers($team->id(), [
       $this->account->getEmail(),
