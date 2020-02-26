@@ -100,22 +100,32 @@ class EdgeEntityEventTestBase extends RulesKernelTestBase {
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
   protected function createEdgeEntity(): EdgeEntityInterface {
-    /** @var \Drupal\apigee_edge\Entity\DeveloperAppInterface $app */
-    $app = DeveloperApp::create([
+    /** @var \Drupal\apigee_edge\Entity\DeveloperAppInterface $entity */
+    $entity = DeveloperApp::create([
       'appId' => 1,
       'name' => $this->randomMachineName(),
       'status' => App::STATUS_APPROVED,
       'displayName' => $this->randomMachineName(),
     ]);
-    $app->setOwner($this->account);
+    $entity->setOwner($this->account);
+    $this->queueEdgeEntityResponse($entity);
+    $entity->save();
+
+    return $entity;
+  }
+
+  /**
+   * Helper to add Edge entity response to stack.
+   *
+   * @param \Drupal\apigee_edge\Entity\EdgeEntityInterface $entity
+   *   The Edge entity.
+   */
+  protected function queueEdgeEntityResponse(EdgeEntityInterface $entity) {
     $this->stack->queueMockResponse([
       'get_developer_app' => [
-        'app' => $app,
-      ]
+        'app' => $entity,
+      ],
     ]);
-    $app->save();
-
-    return $app;
   }
 
   /**

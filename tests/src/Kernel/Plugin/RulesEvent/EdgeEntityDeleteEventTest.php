@@ -53,11 +53,7 @@ class EdgeEntityDeleteEventTest extends EdgeEntityEventTestBase {
 
     // Insert and delete entity.
     $entity = $this->createEdgeEntity();
-    $this->stack->queueMockResponse([
-      'get_developer_app' => [
-        'app' => $entity,
-      ]
-    ]);
+    $this->queueEdgeEntityResponse($entity);
     $entity->delete();
 
     $this->assertLogsContains("Event apigee_actions_entity_delete:developer_app was dispatched.");

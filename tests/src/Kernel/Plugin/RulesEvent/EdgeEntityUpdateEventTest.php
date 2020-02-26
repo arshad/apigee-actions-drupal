@@ -51,22 +51,14 @@ class EdgeEntityUpdateEventTest extends EdgeEntityEventTestBase {
     ]);
     $config_entity->save();
 
-    // Insert and delete entity.
+    // Insert and update entity.
     /** @var \Drupal\apigee_edge\Entity\DeveloperAppInterface $entity */
     $entity = $this->createEdgeEntity();
     $original_name = $entity->getDisplayName();
     $new_name = $this->randomGenerator->name();
-    $this->stack->queueMockResponse([
-      'get_developer_app' => [
-        'app' => $entity,
-      ],
-    ]);
+    $this->queueEdgeEntityResponse($entity);
     $entity->setDisplayName($new_name);
-    $this->stack->queueMockResponse([
-      'get_developer_app' => [
-        'app' => $entity,
-      ]
-    ]);
+    $this->queueEdgeEntityResponse($entity);
     $entity->save();
 
     $this->assertLogsContains("Event apigee_actions_entity_update:developer_app was dispatched.");
