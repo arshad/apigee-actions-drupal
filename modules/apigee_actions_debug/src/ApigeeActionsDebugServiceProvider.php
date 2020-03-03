@@ -18,11 +18,23 @@
  * MA 02110-1301, USA.
  */
 
-namespace Drupal\apigee_actions\Event;
+namespace Drupal\apigee_actions_debug;
+
+use Drupal\Core\DependencyInjection\ContainerBuilder;
+use Drupal\Core\DependencyInjection\ServiceModifierInterface;
 
 /**
- * Defines the Edge entity event.
+ * Overrides services.
  */
-class EdgeEntityEvent extends EdgeEntityEventBase implements ApigeeActionsEventInterface {
+class ApigeeActionsDebugServiceProvider implements ServiceModifierInterface {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function alter(ContainerBuilder $container) {
+    if ($container->has('event_dispatcher')) {
+
+    }
+  }
 
 }

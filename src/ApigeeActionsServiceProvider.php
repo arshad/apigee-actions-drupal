@@ -43,7 +43,7 @@ class ApigeeActionsServiceProvider implements ServiceProviderInterface {
           new Reference('apigee_edge.controller.developer'),
           new Reference('apigee_edge.controller.cache.developer_companies'),
           new Reference('cache_tags.invalidator'),
-          new Reference('logger.factory'),
+          new Reference('logger.channel.apigee_edge_teams'),
           new Reference('event_dispatcher')
         ]);
     }

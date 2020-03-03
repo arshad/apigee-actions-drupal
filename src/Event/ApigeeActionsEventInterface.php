@@ -21,8 +21,8 @@
 namespace Drupal\apigee_actions\Event;
 
 /**
- * Defines the Edge entity event.
+ * Defines a common interface for Apigee Actions events.
  */
-class EdgeEntityEvent extends EdgeEntityEventBase implements ApigeeActionsEventInterface {
+interface ApigeeActionsEventInterface {
 
 }

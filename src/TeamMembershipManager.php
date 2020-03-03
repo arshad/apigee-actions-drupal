@@ -29,19 +29,13 @@ use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\user\UserInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Decorates the apigee_edge_teams.team_membership_manager service.
  */
 class TeamMembershipManager implements TeamMembershipManagerInterface {
-
-  /**
-   * The logger factory.
-   *
-   * @var \Drupal\Core\Logger\LoggerChannelFactoryInterface
-   */
-  private $loggerFactory;
 
   /**
    * The team membership manager service.
@@ -56,13 +50,6 @@ class TeamMembershipManager implements TeamMembershipManagerInterface {
    * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
    */
   private $eventDispatcher;
-
-  /**
-   * The apigee_actions logger.
-   *
-   * @var \Psr\Log\LoggerInterface
-   */
-  private $apigeeActionsLogger;
 
   /**
    * The company members controller factory service.
@@ -121,21 +108,19 @@ class TeamMembershipManager implements TeamMembershipManagerInterface {
    *   The developer companies cache.
    * @param \Drupal\Core\Cache\CacheTagsInvalidatorInterface $cache_tags_invalidator
    *   The cache tags invalidator service.
-   * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_factory
-   *   The logger factory service.
+   * @param \Psr\Log\LoggerInterface $logger
+   *   The logger.
    * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $event_dispatcher
    *   The event dispatcher service.
    */
-  public function __construct(TeamMembershipManagerInterface $inner, EntityTypeManagerInterface $entity_type_manager, CompanyMembersControllerFactoryInterface $company_members_controller_factory, DeveloperControllerInterface $developer_controller, DeveloperCompaniesCacheInterface $developer_companies_cache, CacheTagsInvalidatorInterface $cache_tags_invalidator, LoggerChannelFactoryInterface $logger_factory, EventDispatcherInterface $event_dispatcher) {
+  public function __construct(TeamMembershipManagerInterface $inner, EntityTypeManagerInterface $entity_type_manager, CompanyMembersControllerFactoryInterface $company_members_controller_factory, DeveloperControllerInterface $developer_controller, DeveloperCompaniesCacheInterface $developer_companies_cache, CacheTagsInvalidatorInterface $cache_tags_invalidator, LoggerInterface $logger, EventDispatcherInterface $event_dispatcher) {
     $this->inner = $inner;
     $this->entityTypeManager = $entity_type_manager;
     $this->companyMembersControllerFactory = $company_members_controller_factory;
     $this->developerController = $developer_controller;
     $this->developerCompaniesCache = $developer_companies_cache;
     $this->cacheTagsInvalidator = $cache_tags_invalidator;
-    $this->loggerFactory = $logger_factory;
-    $this->logger = $this->loggerFactory->get('apigee_edge_teams');
-    $this->apigeeActionsLogger = $this->loggerFactory->get('apigee_actions');
+    $this->logger = $logger;
     $this->eventDispatcher = $event_dispatcher;
   }
 
@@ -193,7 +178,6 @@ class TeamMembershipManager implements TeamMembershipManagerInterface {
 
     // Dispatch an event for each developer.
     foreach ($developers as $developer) {
-      $this->apigeeActionsLogger->notice("Event $event was dispatched.");
       $this->eventDispatcher->dispatch($event, new EdgeEntityEvent($team, [
         'team' => $team,
         'member' => $users_by_mail[$developer],

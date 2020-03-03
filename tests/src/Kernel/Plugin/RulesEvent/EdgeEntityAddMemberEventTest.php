@@ -34,6 +34,7 @@ class EdgeEntityAddMemberEventTest extends EdgeEntityEventTestBase {
    */
   public static $modules = [
     'apigee_actions',
+    'apigee_actions_debug',
     'apigee_edge',
     'apigee_edge_teams',
     'apigee_mock_api_client',

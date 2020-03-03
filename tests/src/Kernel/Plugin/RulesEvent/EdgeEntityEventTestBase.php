@@ -46,6 +46,7 @@ class EdgeEntityEventTestBase extends RulesKernelTestBase {
    */
   public static $modules = [
     'apigee_actions',
+    'apigee_actions_debug',
     'apigee_edge',
     'apigee_mock_api_client',
     'dblog',

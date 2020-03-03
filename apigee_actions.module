@@ -58,8 +58,6 @@ function _apigee_actions_dispatch_entity_event(EntityInterface $entity, string $
   if (Drupal::service('apigee_actions.edge_entity_type_manager')->isEdgeEntityType($entity->getEntityType())) {
     $dispatched_event_name = "apigee_actions_entity_$event_name:{$entity->getEntityTypeId()}";
 
-    Drupal::logger('apigee_actions')->notice("Event $dispatched_event_name was dispatched.");
-
     $arguments = [
       $entity->getEntityTypeId() => $entity
     ];

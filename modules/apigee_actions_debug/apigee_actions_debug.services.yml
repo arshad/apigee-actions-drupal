@@ -1,0 +1,7 @@
+services:
+  apigee_actions_debug_subscriber:
+    class: 'Drupal\apigee_actions_debug\EventSubscriber\ApigeeActionsDebugEventSubscriber'
+    arguments:
+      ['@logger.channel.apigee_actions']
+    tags:
+      - { name: 'event_subscriber' }
