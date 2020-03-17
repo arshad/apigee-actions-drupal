@@ -81,7 +81,7 @@ abstract class EdgeEntityEventDeriverBase extends DeriverBase implements EdgeEnt
     // Add additional context for App.
     // TODO: Move this to a plugin?
     if ($entity_type->entityClassImplements(AppInterface::class)) {
-      // Add the team member to the context.
+      // Add the developer to the context.
       $context['developer'] = [
         'type' => 'entity:user',
         'label' => 'Developer',

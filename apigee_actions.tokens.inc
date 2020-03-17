@@ -6,23 +6,16 @@
  */
 
 use Drupal\apigee_edge\Entity\EdgeEntityInterface;
-use Drupal\apigee_edge\Entity\EdgeEntityTypeInterface;
-use Drupal\apigee_edge\Entity\FieldableEdgeEntityInterface;
 use Drupal\Component\Utility\Html;
-use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Render\BubbleableMetadata;
 
 /**
  * Implements hook_token_info_alter().
  */
 function apigee_actions_token_info_alter(&$info) {
-  $entity_types = \Drupal::entityTypeManager()->getDefinitions();
-  $type_info = \Drupal::service('plugin.manager.field.field_type')->getDefinitions();
-
   /** @var \Drupal\Core\Entity\EntityTypeInterface[] $apigee_entity_types */
-  $apigee_entity_types = array_filter($entity_types, function (EntityTypeInterface $entity_type) {
-    return $entity_type instanceof EdgeEntityTypeInterface;
-  });
+  $apigee_entity_types = Drupal::service('apigee_actions.edge_entity_type_manager')->getEntityTypes();
+  $type_info = Drupal::service('plugin.manager.field.field_type')->getDefinitions();
 
   foreach ($apigee_entity_types as $entity_type) {
     $token_type = $entity_type->get('token_type');
@@ -37,29 +30,24 @@ function apigee_actions_token_info_alter(&$info) {
         'module' => 'apigee_actions',
       ];
 
-      if ($entity_type->entityClassImplements(FieldableEdgeEntityInterface::class)) {
-        $fields = \Drupal::service('entity_field.manager')->getFieldStorageDefinitions($entity_type->id());
-        foreach ($fields as $field_name => $field) {
-          /** @var \Drupal\field\FieldStorageConfigInterface $field */
+      $fields = Drupal::service('entity_field.manager')->getFieldStorageDefinitions($entity_type->id());
+      foreach ($fields as $field_name => $field) {
+        /** @var \Drupal\field\FieldStorageConfigInterface $field */
+        $params['@type'] = $type_info[$field->getType()]['label'];
+        $description = t('@type field.', $params);
 
-          $labels = _token_field_label($entity_type->id(), $field->getName());
-          $label = array_shift($labels);
-          $params['@type'] = $type_info[$field->getType()]['label'];
-          if (!empty($labels)) {
-            $params['%labels'] = implode(', ', $labels);
-            $description = t('@type field. Also known as %labels.', $params);
-          }
-          else {
-            $description = t('@type field.', $params);
-          }
-
-          $field_token_name = $token_type . '-' . $field_name;
-          $info['tokens'][$token_type][$field_name] = [
-            'name' => Html::escape($label),
-            'description' => $description,
-            'module' => 'token',
-          ];
+        $labels = _token_field_label($entity_type->id(), $field->getName());
+        $label = array_shift($labels);
+        if (!empty($labels)) {
+          $params['%labels'] = implode(', ', $labels);
+          $description = t('@type field. Also known as %labels.', $params);
         }
+
+        $info['tokens'][$token_type][$field_name] = [
+          'name' => Html::escape($label),
+          'description' => $description,
+          'module' => 'token',
+        ];
       }
     }
   }
@@ -75,17 +63,15 @@ function apigee_actions_tokens($type, $tokens, array $data, array $options, Bubb
     /* @var \Drupal\Core\Entity\ContentEntityInterface $entity */
     $entity = $data['entity'];
 
-    if (!($entity instanceof EdgeEntityInterface)) {
-      return $replacements;
-    }
+    if ($entity instanceof EdgeEntityInterface) {
+      foreach ($tokens as $field_name => $original) {
+        // Ensure entity has requested field and is not empty.
+        if (!$entity->hasField($field_name) || $entity->get($field_name)->isEmpty()) {
+          continue;
+        }
 
-    foreach ($tokens as $field_name => $original) {
-      // Ensure entity has requested field and is not empty.
-      if (!$entity->hasField($field_name) || $entity->get($field_name)->isEmpty()) {
-        continue;
+        $replacements[$original] = $entity->get($field_name)->value;
       }
-
-      $replacements[$original] = $entity->get($field_name)->value;
     }
   }
 

@@ -55,7 +55,8 @@ function apigee_actions_entity_update(EntityInterface $entity) {
  * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
  */
 function _apigee_actions_dispatch_entity_event(EntityInterface $entity, string $event_name) {
-  if (Drupal::service('apigee_actions.edge_entity_type_manager')->isEdgeEntityType($entity->getEntityType())) {
+  if (Drupal::service('apigee_actions.edge_entity_type_manager')
+    ->isEdgeEntityType($entity->getEntityType())) {
     $dispatched_event_name = "apigee_actions_entity_$event_name:{$entity->getEntityTypeId()}";
 
     $arguments = [
@@ -64,9 +65,11 @@ function _apigee_actions_dispatch_entity_event(EntityInterface $entity, string $
 
     // TODO: Move this to a plugin?
     if ($entity instanceof AppInterface) {
-      $user = Drupal::entityTypeManager()->getStorage('user')->loadByProperties([
-        'uuid' => $entity->getAppOwner(),
-      ]);
+      $user = Drupal::entityTypeManager()
+        ->getStorage('user')
+        ->loadByProperties([
+          'uuid' => $entity->getAppOwner(),
+        ]);
       $arguments['developer'] = reset($user);
     }
 

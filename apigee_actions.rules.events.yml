@@ -18,3 +18,10 @@ apigee_actions_entity_remove_member:
   deriver: '\Drupal\apigee_actions\Plugin\RulesEvent\EdgeEntityRemoveMemberEventDeriver'
   event: 'remove_member'
 
+apigee_actions_entity_add_product:
+  deriver: '\Drupal\apigee_actions\Plugin\RulesEvent\EdgeEntityAddProductEventDeriver'
+  event: 'add_product'
+
+apigee_actions_entity_remove_product:
+  deriver: '\Drupal\apigee_actions\Plugin\RulesEvent\EdgeEntityRemoveProductEventDeriver'
+  event: 'remove_product'

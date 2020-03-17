@@ -35,7 +35,7 @@ class EdgeEntityInsertEventTest extends EdgeEntityEventTestBase {
    * @throws \Drupal\Core\Entity\EntityStorageException
    * @throws \Drupal\rules\Exception\LogicException
    */
-  public function testInsertEvent() {
+  public function testEvent() {
     // Create an insert rule.
     $rule = $this->expressionManager->createRule();
     $rule->addAction('apigee_actions_log_message',

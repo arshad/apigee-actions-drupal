@@ -35,7 +35,7 @@ class EdgeEntityDeleteEventTest extends EdgeEntityEventTestBase {
    * @throws \Drupal\Core\Entity\EntityStorageException
    * @throws \Drupal\rules\Exception\LogicException
    */
-  public function testDeleteEvent() {
+  public function testEvent() {
     // Create a delete rule.
     $rule = $this->expressionManager->createRule();
     $rule->addAction('apigee_actions_log_message',

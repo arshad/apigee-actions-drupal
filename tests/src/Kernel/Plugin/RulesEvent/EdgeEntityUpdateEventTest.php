@@ -35,7 +35,7 @@ class EdgeEntityUpdateEventTest extends EdgeEntityEventTestBase {
    * @throws \Drupal\Core\Entity\EntityStorageException
    * @throws \Drupal\rules\Exception\LogicException
    */
-  public function testUpdateEvent() {
+  public function testEvent() {
     // Create an update rule.
     $rule = $this->expressionManager->createRule();
     $rule->addAction('apigee_actions_log_message',

@@ -33,6 +33,7 @@ class ApigeeActionsServiceProvider implements ServiceProviderInterface {
    * {@inheritdoc}
    */
   public function register(ContainerBuilder $container) {
+    // Decorate the apigee_edge_teams.team_membership_manager service.
     if ($container->has('apigee_edge_teams.team_membership_manager')) {
       $container->register('apigee_actions.team_membership_manager', TeamMembershipManager::class)
         ->setDecoratedService('apigee_edge_teams.team_membership_manager')

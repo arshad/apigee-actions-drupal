@@ -5,3 +5,9 @@ services:
   logger.channel.apigee_actions:
     parent: logger.channel_base
     arguments: ['apigee_actions']
+  apigee_actions.events_subscriber:
+    class: Drupal\apigee_actions\EventSubscriber\AppCredentialEventSubscriber
+    arguments:
+      ['@entity_type.manager', '@event_dispatcher', '@current_user', '@logger.channel.apigee_actions']
+    tags:
+      - { name: 'event_subscriber' }

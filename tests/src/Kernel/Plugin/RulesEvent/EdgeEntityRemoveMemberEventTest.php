@@ -57,7 +57,7 @@ class EdgeEntityRemoveMemberEventTest extends EdgeEntityEventTestBase {
    * @throws \Drupal\Core\Entity\EntityStorageException
    * @throws \Drupal\rules\Exception\LogicException
    */
-  public function testRemoveMemberEvent() {
+  public function testEvent() {
     // Create an remove_member rule.
     $rule = $this->expressionManager->createRule();
     $rule->addAction('apigee_actions_log_message',
