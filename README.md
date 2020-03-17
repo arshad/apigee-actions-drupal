@@ -5,6 +5,7 @@ The Apigee Actions module provides rules integration for Apigee Edge. It makes i
 
   * Sending an email when an App is created.
   * Notify a developer when added to a Team.
+  * Notify admin when an API product is added to an App.
 
 ## Events
 
@@ -18,6 +19,8 @@ The following events are supported out of the box:
 | After saving a new App  | `apigee_actions_entity_insert:developer_app`  |
 | After deleting an App   | `apigee_actions_entity_delete:developer_app`  |
 | After updating an App   | `apigee_actions_entity_insert:developer_app`  |
+| After adding an Api Product   | `apigee_actions_entity_add_product:developer_app`  |
+| After removing an Api Product   | `apigee_actions_entity_remove_product:developer_app`  |
 
 ### Team App
 `\Drupal\apigee_edge_teams\Entity\TeamApp`
@@ -27,6 +30,8 @@ The following events are supported out of the box:
 | After saving a new Team App  | `apigee_actions_entity_insert:team_app`  |
 | After deleting an Team App   | `apigee_actions_entity_delete:team_app`  |
 | After updating an Team App   | `apigee_actions_entity_insert:team_app`  |
+| After adding an Api Product   | `apigee_actions_entity_add_product:team_app`  |
+| After removing an Api Product   | `apigee_actions_entity_remove_product:team_app`  |
 
 ### Team
 `\Drupal\apigee_edge_teams\Entity\Team`
